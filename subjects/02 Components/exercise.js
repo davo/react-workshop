@@ -35,18 +35,45 @@ styles.panel = {
 };
 
 class Tabs extends React.Component {
+
+  state = {
+    activeIndex: 0
+  }
+
+  selectIndex = (index) => {
+    this.setState({activeIndex: index })
+  }
+
   render() {
+
+    const data = this.props.data;
+
+
+    const activeIndex = this.state.activeIndex;
+
+    const tabs = data.map( (country, index) => (
+
+        <div className="Tab"
+        style={
+          activeIndex === index ? styles.activeTab : styles.tab
+        }
+        key={country.id}
+        onClick={() => this.selectIndex(index)}>
+            {country.name}
+        </div>
+      )
+    )
+
     return (
       <div className="Tabs">
-        <div className="Tab" style={styles.activeTab}>
-          Active
-        </div>
-        <div className="Tab" style={styles.tab}>
-          Inactive
-        </div>
-        <div className="TabPanel" style={styles.panel}>
-          Panel
-        </div>
+        {tabs}
+
+
+          <div className="TabPanel" style={styles.panel}>
+            <h1>Panel</h1>
+            <p>{name}</p>
+          </div>
+
       </div>
     );
   }
@@ -79,5 +106,8 @@ const DATA = [
 
 ReactDOM.render(
   <App countries={DATA} />,
-  document.getElementById("app")
+  document.getElementById("app"),
+  function() {
+    require("./tests").run(this);
+  }
 );

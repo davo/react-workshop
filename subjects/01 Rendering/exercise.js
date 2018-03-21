@@ -29,9 +29,34 @@ const DATA = {
   ]
 };
 
+const itemList = (
+
+        DATA.items.filter( item => item.type === "mexican")
+        .sort(sortBy("name"))
+        .map((item) => <li key={item.id}>{item.name}</li>)
+)
+
+
 function Menu() {
-  return <div>Open the console, you have failing tests.</div>;
+
+  // const items = DATA.items
+  //   .filter( item => item.type === "mexican")
+  //   .sort(sortBy("name"))
+  //   .map(item => <li key={item.id}>{ item.name }</li>);
+
+  return (
+
+    <div>
+{/*      <select>
+        {DATA.items.map(item => <option key={item.id}>{ item.name }</option>);}
+      </select>*/}
+      <h1>{DATA.title}</h1>
+      <ul>{itemList}</ul>
+    </div>
+  );
 }
+
+
 
 ReactDOM.render(<Menu />, document.getElementById("app"), () => {
   require("./tests").run();

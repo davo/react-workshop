@@ -3,16 +3,7 @@ import "./styles.css";
 import React from "react";
 import ReactDOM from "react-dom";
 
-class ContentToggle extends React.Component {
-  state = { isOpen: false };
-
-  handleClick = () => {
-    this.setState({ isOpen: !this.state.isOpen }, () => {
-      if (this.props.onToggle) {
-        this.props.onToggle(this.state.isOpen);
-      }
-    });
-  };
+function ContentToggle(props) {
 
   render() {
     let summaryClassName = "content-toggle-summary";
@@ -22,36 +13,82 @@ class ContentToggle extends React.Component {
     }
 
     return (
-      <div {...this.props} className="content-toggle">
-        <button onClick={this.handleClick} className={summaryClassName}>
-          {this.props.summary}
+      <div {...props} className="content-toggle">
+        <button onClick={() => props.onToggle(!props.isOpen)}
+          className={summaryClassName}>
+          {props.summary}
         </button>
         <div className="content-toggle-details">
-          {this.state.isOpen && this.props.children}
+          {props.isOpen && props.children}
         </div>
       </div>
     );
   }
 }
 
-class App extends React.Component {
-  state = {
-    tacos: [
-      { id: 0, name: "Carnitas", src: "tacos/carnitas.png" },
-      { id: 1, name: "Pollo", src: "tacos/pollo.png" },
-      { id: 2, name: "Asada", src: "tacos/asada.png" }
-    ]
-  };
+class StatefulContentToggle extends React.Component {
+  state = { isOpen: false}
 
   render() {
     return (
+      <ContentToggle
+        {...this.props}
+        isOpen = {this.state.isOpen}
+        onToggle = {isOpen => hthis.setState({ isOpen })}
+      />
+    );
+  }
+
+}
+
+
+import carnitas from "./tacos/carnitas.png";
+import pollo from "./tacos/pollo.png";
+import asada from "./tacos/asada.png";
+
+class App extends React.Component {
+  state = {
+    tacos: [
+      { id: 0, name: "Carnitas", src: carnitas, open: false },
+      { id: 1, name: "Pollo", src: pollo, open: false },
+      { id: 2, name: "Asada", src: asada, open: false }
+    ]
+  };
+
+  toggleAll() {
+
+  }
+
+  handleTacoToggle(taco, isOpen) {
+    this.setState({
+      tacos: this.state.tacos.map( t => {
+          if (t === taco) {
+            t.open = isOpen
+          }
+        }
+      })
+    })
+  }
+
+  render() {
+
+    const allOpen = this.state.tacos.every(t => t.open);
+
+    return (
       <div>
+      <button
+        onClick={() => this.toggleAll()}
+      >Toggle All</button>
+        <pre>{JSON.stringify(this.state, null, 2)}</pre>
         <div>
           {this.state.tacos.map(taco => (
             <ContentToggle
               key={taco.name}
               style={{ width: 300 }}
               summary={taco.name}
+              isOpen={taco.open}
+              onToggle={isOpen => this.handleTacoToggle(taco, isOpen)}
+
             >
               <div
                 style={{
